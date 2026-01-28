@@ -3,12 +3,18 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
 )
 
 func main() {
+	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		fmt.Fprintf(w, `{"status":"ok","time":"%s"}`, time.Now().Format(time.RFC3339))
+	})
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html")
-		fmt.Fprintln(w, `<!DOCTYPE html>
+		fmt.Fprintf(w, `<!DOCTYPE html>
 <html>
 <head>
     <title>Hello World</title>
@@ -37,8 +43,9 @@ func main() {
     <h1>Hello, World!</h1>
     <img src="https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif" alt="German Shorthaired Pointer waving hello">
     <p>A friendly German Shorthaired Pointer says hi!</p>
+    <p style="font-size: 12px; color: #999;">Server time: %s</p>
 </body>
-</html>`)
+</html>`, time.Now().Format("Monday, January 2, 2006 at 3:04 PM"))
 	})
 
 	fmt.Println("Server starting on http://localhost:8080")
